@@ -9,7 +9,23 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
   - package-ecosystem: "uv" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    groups:
+      uv:
+        patterns:
+          - "*"
+  - package-ecosystem: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    groups:
+      pre-commit:
+        patterns:
+          - "*"
