@@ -39,6 +39,7 @@ jobs:
         with:
           args: --no-progress --max-retries 2 --accept "200..=299,429" --files-from changed.txt
           fail: false
+          failIfEmpty: false
 
       - name: Check links in all files
         if: github.event_name != 'pull_request'
@@ -46,3 +47,4 @@ jobs:
         with:
           args: --no-progress --max-retries 2 --accept "200..=299,429" "./**/*.md"
           fail: false
+          failIfEmpty: false
