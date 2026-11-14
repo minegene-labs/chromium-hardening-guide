@@ -1,3 +1,4 @@
+import importlib.util
 import json
 import os
 import plistlib
@@ -12,6 +13,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CONFIGGEN = ROOT / 'configs' / 'ConfigGen.py'
 CONFIG = ROOT / 'configs' / 'Configuration.config'
+
+
+def load_configgen():
+    spec = importlib.util.spec_from_file_location('ConfigGen', CONFIGGEN)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 REG_LINE = re.compile(r'^"[^"]+"=(dword:[0-9A-F]{8}|"(?:[^"\\]|\\.)*")$')
 
 
@@ -72,6 +82,19 @@ class ConfigGenTest(unittest.TestCase):
         for line in lines[1:]:
             if line and not line.startswith('['):
                 self.assertRegex(line, REG_LINE)
+
+    def test_reg_value_conversion(self):
+        convert = load_configgen().ConvertToRegValue
+        self.assertEqual(convert(True), 'dword:00000001')
+        self.assertEqual(convert(10), 'dword:0000000A')
+        self.assertEqual(convert('it\'s'), '"it\'s"')
+        self.assertEqual(convert('a\\b"c'), '"a\\\\b\\"c"')
+        self.assertEqual(convert(['*']), '"[\\"*\\"]"')
+        value = [{'a': True, 'b': None, 'c': "it's", 'd': 'x\\y'}]
+        text = convert(value)
+        self.assertRegex('"x"=' + text, REG_LINE)
+        decoded = text[1:-1].replace('\\"', '"').replace('\\\\', '\\')
+        self.assertEqual(json.loads(decoded), value)
 
     def test_flags_file(self):
         for system in ('linux', 'windows', 'macos'):
