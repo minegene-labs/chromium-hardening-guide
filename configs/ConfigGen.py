@@ -108,7 +108,7 @@ def WriteRegPolicy(recommend, policies, recommendedPolicies):
         policies.update(recommendedPolicies)
     if not os.path.exists('policy'):
         os.makedirs('policy')
-    with open(Files['windows_policy'], 'a') as policyOutput:
+    with open(Files['windows_policy'], 'w') as policyOutput:
         regPath = 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Google\\Chrome'
         policyOutput.write('Windows Registry Editor Version 5.00\n\n')
         if recommend:
@@ -371,7 +371,7 @@ def main() -> int:
         help='Separate recommended policies from regular ones.'
     )
     args = ArgsParserOverrides(parser.parse_known_args()[0])
-    
+
     if not os.path.isfile(args.file):
         parser.add_argument(
             '--help', '-h',
