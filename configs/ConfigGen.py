@@ -257,7 +257,7 @@ def ParseConfig(data, args, parser):
             else:
                 del filteredData[e]
 
-    if args.choice == '' or args.choice == 'y':
+    if args.choice in ('', 'y', 'yes'):
         # Find remaining negations
         tempFiltData = dict(filteredData)
         for e in filteredData:
