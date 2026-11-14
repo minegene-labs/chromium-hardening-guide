@@ -80,9 +80,9 @@ MacOS policies follow this format (this policy does nothing, it just demonstrate
       <false />
       <key>StringEntry</key>
       <string>dictionary_string</string>
-      <keyDictionaryEntry</key>
+      <key>DictionaryEntry</key>
       <dict>
-        <key>TestEntry<key>
+        <key>TestEntry</key>
         <integer>0</integer>
       </dict>
     </dict>
