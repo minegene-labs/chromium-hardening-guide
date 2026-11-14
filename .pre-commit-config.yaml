@@ -5,3 +5,11 @@ repos:
       - id: check-json
         files: ^configs/Configuration.config$
         types: [] # default works only with .json files, here custom extension is used
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.3
+    hooks:
+      - id: codespell
+        exclude: ^uv\.lock$
