@@ -257,7 +257,7 @@ def ParseConfig(data, args, parser):
             else:
                 del filteredData[e]
 
-    if args.choice == '' or args.choice == 'y':
+    if args.choice in ('', 'y', 'yes'):
         # Find remaining negations
         tempFiltData = dict(filteredData)
         for e in filteredData:
@@ -371,7 +371,7 @@ def main() -> int:
         help='Separate recommended policies from regular ones.'
     )
     args = ArgsParserOverrides(parser.parse_known_args()[0])
-    
+
     if not os.path.isfile(args.file):
         parser.add_argument(
             '--help', '-h',
