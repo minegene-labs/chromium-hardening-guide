@@ -1,0 +1,48 @@
+name: Check Links
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "**/*.md"
+  schedule:
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: List changed Markdown files
+        id: changed
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git diff --name-only --diff-filter=ACMR "$BASE_SHA...$HEAD_SHA" -- '*.md' > changed.txt
+          if [ -s changed.txt ]; then echo "any=true" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Check links in changed files
+        if: steps.changed.outputs.any == 'true'
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --no-progress --max-retries 2 --accept "200..=299,429" --files-from changed.txt
+          fail: false
+
+      - name: Check links in all files
+        if: github.event_name != 'pull_request'
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --no-progress --max-retries 2 --accept "200..=299,429" "./**/*.md"
+          fail: false
