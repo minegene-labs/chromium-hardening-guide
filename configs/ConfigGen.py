@@ -330,14 +330,14 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(
         prog='ConfigGen',
-        description='Parse a chromium policy and flag database (Configuration.json), outputs flags to a folder `flags/`, outputs policies to a folder in reference to the platform the policy is for (e.g. `macos_policy`)',
+        description='Parse a chromium policy and flag database (Configuration.config), outputs flags to a folder `flags/`, outputs policies to a folder `policy/` (and `recommended-policy/` when using --recommend)',
         add_help=False
     )
     parser.add_argument(
         '--system', '-s',
         choices=Systems.values(),
         default=platformOS,
-        help='Target operating system (if not specified, then current platform), MacOS and Windows not supported currently.'
+        help='Target operating system (if not specified, then current platform).'
     )
     parser.add_argument(
         '--type', '-t',
@@ -349,7 +349,7 @@ def main() -> int:
         '--format',
         choices=FlagFileFormats.values(),
         default=FlagFileFormats['gen'],
-        help='Output format for the flag file. Generic is just each flag separated by a new line, Variable is in the form of shell variable declarations, Chromewrapper is in the form of my chromewrapper project\'s wrapper flags file. If not specified then generic.')
+        help='Output format for the flag file. Generic is just each flag separated by a new line, Variable is in the form of shell variable declarations. If not specified then generic.')
     parser.add_argument(
         '--tag',
         help='Filter by tag for the output config.'
@@ -371,7 +371,7 @@ def main() -> int:
         help='Separate recommended policies from regular ones.'
     )
     args = ArgsParserOverrides(parser.parse_known_args()[0])
-    
+
     if not os.path.isfile(args.file):
         parser.add_argument(
             '--help', '-h',
