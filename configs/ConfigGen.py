@@ -108,7 +108,7 @@ def WriteRegPolicy(recommend, policies, recommendedPolicies):
         policies.update(recommendedPolicies)
     if not os.path.exists('policy'):
         os.makedirs('policy')
-    with open(Files['windows_policy'], 'a') as policyOutput:
+    with open(Files['windows_policy'], 'w') as policyOutput:
         regPath = 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Google\\Chrome'
         policyOutput.write('Windows Registry Editor Version 5.00\n\n')
         if recommend:
